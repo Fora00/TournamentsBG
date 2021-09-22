@@ -1,36 +1,48 @@
 <template>
-  <div>{{ tournament.games }}</div>
   <div class="flex flex-col items-center">
-    <h1 class="uppercase items-center">Torneo {{ tournament.name }}</h1>
-    <h2>
-      with
-      <p class="capitalize">
+    <h1 v-if="!winner" class="uppercase items-center text-3xl font-extrabold">
+      Torneo {{ tournament.name }}
+    </h1>
+    <h1 v-else class="uppercase items-center text-3xl font-extrabold">
+      {{ winner }} is the Winner of {{ tournament.name }}
+    </h1>
+    <div class="flex flex-row items-center mb-4">
+      <h3 class="font-light italic mr-5">with</h3>
+      <h2 class="capitalize text-2xl">
         {{ tournament.players }}
-      </p>
-    </h2>
+      </h2>
+    </div>
     <div v-for="(game, index) in tournament.games" :key="index">
-      {{ index }}
-      <div class="border-2 border-green-500 flex items-center">
-        <p class="uppercase border-2 border-black flex-1">
+      <div class="border-2 border-green-500 flex items-center mb-6">
+        <p class="uppercase border-2 border-black flex-1 mr-4">
           {{ game.name }}
         </p>
-        <div class="border-2 border-black">
+        <div class="border-2 border-black mr-4">
           <div class="capitalize">Matches played:</div>
           <div class="border-1 border-gray-500 bg-gray-200 text-center">
             {{ game.numberMatches }}
           </div>
-          <div class="border-1 border-gray-500 bg-gray-200 text-center">
-            {{ game.winners }}
-          </div>
         </div>
-        <div class="border-2 border-black flex flex-row items-center">
-          <p class="capitalize mr-2">Aggiungere Vincitore:</p>
+        <div class="border-2 border-black flex flex-row items-center mr-4">
+          <p class="capitalize mr-2">Winner of the match:</p>
           <div class="flex flex-wrap align-middle">
             <input
               type="text"
               placeholder="winner"
               v-model="winnersInput[index]"
-              class="border-2"
+              class="
+                border-2
+                appearance-none
+                bg-transparent
+                border-none
+                w-auto
+                text-gray-700
+                mr-3
+                py-1
+                px-2
+                leading-tight
+                focus:outline-none
+              "
             />
             <button
               class="
@@ -99,14 +111,13 @@ export default {
       winnersInput: [],
       winnerProxy: [],
       winnerArray: [],
+      winner: null,
     };
   },
   methods: {
     addGame(game, index) {
       game.numberMatches = game.numberMatches + 1;
       game.winners.push(this.winnersInput[index]);
-      console.log("is ", game.winners[0]);
-      console.log("is winner  ", this.winnerProxy);
       this.winnersInput = [];
     },
 
@@ -123,9 +134,7 @@ export default {
 
       this.winnerArray = JSON.parse(JSON.stringify(this.winnerProxy));
 
-      let winner = this.mode(this.winnerArray);
-
-      console.log(winner);
+      this.winner = this.mode(this.winnerArray);
     },
     mode(arr) {
       return arr
