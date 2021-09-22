@@ -1,8 +1,8 @@
 <template>
-  <Navbar />
+  <Navbar @NavbarSelection="selectedNavbar" />
 
   <div
-    v-show="selection"
+    v-if="selection"
     class="text-center flex flex-col justify-center items-center"
   >
     <div v-for="(tournament, index) in tournaments" :key="index">
@@ -168,12 +168,13 @@
       "
     ></div>
   </div>
-
-  <Tournament
-    v-show="!selection"
-    :tournament="tournamentSelected"
-    @close="isSelection"
-  />
+  <div v-else>
+    <Tournament
+      v-show="!selection"
+      @toggleSelection="selected"
+      :tournament="tournamentSelected"
+    />
+  </div>
 </template>
 
 <script>
@@ -190,6 +191,7 @@ export default {
       formGames: "",
       isPlus: false,
       tournamentSelected: {},
+
       selection: true,
 
       tournaments: [
@@ -198,9 +200,9 @@ export default {
           name: "Test 1",
           players: "A,B,C,D",
           games: [
-            { name: "Gioco 1", numberMatches: 2 },
-            { name: "Gioco 2", numberMatches: 1 },
-            { name: "Gioco 3", numberMatches: 3 },
+            { name: "Gioco 1", numberMatches: 2, winners: [] },
+            { name: "Gioco 2", numberMatches: 1, winners: [] },
+            { name: "Gioco 3", numberMatches: 3, winners: [] },
           ],
         },
         {
@@ -208,26 +210,26 @@ export default {
           name: "Test 2",
           players: "A,B,C",
           games: [
-            { name: "Gioco 1", numberMatches: 2 },
-            { name: "Gioco 2", numberMatches: 1 },
-            { name: "Gioco 3", numberMatches: 10 },
+            { name: "Gioco 1", numberMatches: 2, winners: [] },
+            { name: "Gioco 2", numberMatches: 1, winners: [] },
+            { name: "Gioco 3", numberMatches: 10, winners: [] },
           ],
         },
         {
           id: 3,
           name: "Test 3",
           players: "A,B,D",
-          games: [{ name: "Gioco 1", numberMatches: 0 }],
+          games: [{ name: "Gioco 1", numberMatches: 0, winners: [] }],
         },
         {
           id: 4,
           name: "Test 4",
           players: "B,C,D",
           games: [
-            { name: "Gioco 1", numberMatches: 2 },
-            { name: "Gioco 2", numberMatches: 1 },
-            { name: "Gioco 3", numberMatches: 3 },
-            { name: "Gioco 4", numberMatches: 6 },
+            { name: "Gioco 1", numberMatches: 2, winners: [] },
+            { name: "Gioco 2", numberMatches: 1, winners: [] },
+            { name: "Gioco 3", numberMatches: 3, winners: [] },
+            { name: "Gioco 4", numberMatches: 6, winners: [] },
           ],
         },
       ],
@@ -242,7 +244,7 @@ export default {
       let gamesArr = [];
 
       for (let i = 0; i < gameToAdd.length; i++) {
-        gamesArr.push({ name: gameToAdd[i], numberMatches: 0 });
+        gamesArr.push({ name: gameToAdd[i], numberMatches: 0, winners: [] });
       }
 
       this.tournaments.push({
@@ -268,8 +270,11 @@ export default {
       this.tournamentSelected = x;
       this.selection = !this.selection;
     },
-    toggleSelection() {
+    selected() {
       this.selection = !this.selection;
+    },
+    selectedNavbar() {
+      this.selection = true;
     },
   },
 };
