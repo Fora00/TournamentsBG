@@ -97,7 +97,8 @@ export default {
   data() {
     return {
       winnersInput: [],
-      winnersArray: [],
+      winnerProxy: [],
+      winnerArray: [],
     };
   },
   methods: {
@@ -105,7 +106,7 @@ export default {
       game.numberMatches = game.numberMatches + 1;
       game.winners.push(this.winnersInput[index]);
       console.log("is ", game.winners[0]);
-      console.log("is winner  ", this.winnersArray);
+      console.log("is winner  ", this.winnerProxy);
       this.winnersInput = [];
     },
 
@@ -116,11 +117,24 @@ export default {
       for (let i = 0; i < tournament.games.length; i++) {
         let arr = tournament.games[i].winners;
         for (let j = 0; j < arr.length; j++) {
-          this.winnersArray.push(arr[j]);
+          this.winnerProxy.push(arr[j]);
         }
       }
 
-      console.log("is ", this.winnersArray);
+      this.winnerArray = JSON.parse(JSON.stringify(this.winnerProxy));
+
+      let winner = this.mode(this.winnerArray);
+
+      console.log(winner);
+    },
+    mode(arr) {
+      return arr
+        .sort(
+          (a, b) =>
+            arr.filter((v) => v === a).length -
+            arr.filter((v) => v === b).length
+        )
+        .pop();
     },
   },
 };
