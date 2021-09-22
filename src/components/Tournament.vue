@@ -1,4 +1,5 @@
 <template>
+  <div>{{ tournament.games }}</div>
   <div class="flex flex-col items-center">
     <h1 class="uppercase items-center">Torneo {{ tournament.name }}</h1>
     <h2>
@@ -54,21 +55,39 @@
         </div>
       </div>
     </div>
-    <div
-      @click="goBack"
-      class="
-        border-2 border-gray-500
-        bg-gray-500
-        text-white
-        hover:bg-gray-200 hover:text-black
-        mt-6
-        cursor-pointer
-      "
-    >
-      Back
+    <div class="flex flex-row uppercase">
+      <div
+        @click="goBack"
+        class="
+          border-2 border-gray-500
+          bg-gray-500
+          text-white
+          hover:bg-gray-200 hover:text-black
+          mt-6
+          ml-2
+          mr-2
+          cursor-pointer
+        "
+      >
+        Back
+      </div>
+      <div
+        @click="determineWinner(tournament)"
+        class="
+          border-2 border-green-500
+          bg-green-500
+          text-black
+          hover:bg-green-200 hover:text-black
+          mt-6
+          ml-2
+          mr-2
+          cursor-pointer
+        "
+      >
+        winner?!
+      </div>
     </div>
   </div>
-  <div class="uppercase">{{ winnersInput }} and {{ winners }}</div>
 </template>
 
 <script>
@@ -78,18 +97,30 @@ export default {
   data() {
     return {
       winnersInput: [],
-      winners: [],
+      winnersArray: [],
     };
   },
   methods: {
     addGame(game, index) {
       game.numberMatches = game.numberMatches + 1;
       game.winners.push(this.winnersInput[index]);
+      console.log("is ", game.winners[0]);
+      console.log("is winner  ", this.winnersArray);
       this.winnersInput = [];
     },
 
     goBack() {
       this.$emit("toggleSelection");
+    },
+    determineWinner(tournament) {
+      for (let i = 0; i < tournament.games.length; i++) {
+        let arr = tournament.games[i].winners;
+        for (let j = 0; j < arr.length; j++) {
+          this.winnersArray.push(arr[j]);
+        }
+      }
+
+      console.log("is ", this.winnersArray);
     },
   },
 };
