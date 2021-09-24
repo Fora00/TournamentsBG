@@ -5,44 +5,59 @@
     v-if="selection"
     class="text-center flex flex-col justify-center items-center"
   >
-    <div v-for="(tournament, index) in tournaments" :key="index">
-      <div
-        @click="showTournament(tournament)"
-        class="
-          shadow-md
-          bg-green-600
-          text-white
-          p-10
-          text-center
-          rounded
-          mb-5
-          cursor-pointer
-          hover:bg-green-200 hover:text-black
-          flex flex-col flex-wrap
-        "
-      >
-        <div>
-          Torneo: {{ index + 1 }} chiamato {{ tournament.name }} con
-          {{ tournament.players }} e n° giochi =
-          {{ tournament.games.length }}
-        </div>
+    <div class="text-center flex flex-wrap justify-center items-center">
+      <div v-for="(tournament, index) in tournaments" :key="index">
+        <div
+          @click="showTournament(tournament)"
+          class="
+            w-auto
+            shadow-md
+            bg-green-500
+            text-white
+            p-10
+            text-center
+            rounded
+            m-5
+            cursor-pointer
+            hover:bg-green-200 hover:text-black
+            flex flex-col flex-wrap
+          "
+        >
+          <div>
+            Torneo {{ index + 1 }}: named
+            <span class="font-bold"> {{ tournament.name }}</span>
+          </div>
+          <div class="flex flex-row justify-center">
+            <span> with </span>
+            <div v-for="(player, index) in tournament.players" :key="index">
+              <p class="pl-2 font-bold">{{ player }}</p>
+            </div>
+          </div>
+          <div>
+            and
+            <span class="font-bold">
+              {{ tournament.games.length }}
+            </span>
+            games
+          </div>
 
-        <div class="flex flex-row justify-around">
-          <div
-            @click.stop="deleteTournament(index)"
-            class="
-              mt-5
-              bg-red-500
-              hover:bg-red-200
-              h-10
-              w-10
-              flex
-              items-center
-              justify-center
-              rounded-full
-            "
-          >
-            X
+          <div class="flex flex-row justify-around">
+            <div
+              @click.stop="deleteTournament(index)"
+              class="
+                mt-5
+                bg-red-500
+                hover:bg-red-200
+                h-10
+                w-10
+                flex
+                items-center
+                justify-center
+                rounded-full
+              "
+            >
+              X
+            </div>
           </div>
         </div>
       </div>
@@ -50,6 +65,7 @@
     <div
       class="
         bg-green-500
+        mt-8
         h-12
         w-12
         text-white text-center
@@ -198,38 +214,38 @@ export default {
         {
           id: 1,
           name: "Test 1",
-          players: "A,B,C,D",
+          players: ["A", "B", "C", "D"],
           games: [
-            { name: "Gioco 1", numberMatches: 2, winners: [] },
-            { name: "Gioco 2", numberMatches: 1, winners: [] },
-            { name: "Gioco 3", numberMatches: 3, winners: [] },
+            { name: "Gioco 1", numberMatches: 2, winners: [], img: "" },
+            { name: "Gioco 2", numberMatches: 1, winners: [], img: "" },
+            { name: "Gioco 3", numberMatches: 3, winners: [], img: "" },
           ],
         },
         {
           id: 2,
           name: "Test 2",
-          players: "A,B,C",
+          players: ["A", "B", "C"],
           games: [
-            { name: "Gioco 1", numberMatches: 2, winners: [] },
-            { name: "Gioco 2", numberMatches: 1, winners: [] },
-            { name: "Gioco 3", numberMatches: 10, winners: [] },
+            { name: "Gioco 1", numberMatches: 2, winners: [], img: "" },
+            { name: "Gioco 2", numberMatches: 1, winners: [], img: "" },
+            { name: "Gioco 3", numberMatches: 10, winners: [], img: "" },
           ],
         },
         {
           id: 3,
           name: "Test 3",
-          players: "A,B,D",
-          games: [{ name: "Gioco 1", numberMatches: 0, winners: [] }],
+          players: ["A", "B", "D"],
+          games: [{ name: "Gioco 1", numberMatches: 0, winners: [], img: "" }],
         },
         {
           id: 4,
           name: "Test 4",
-          players: "B,C,D",
+          players: ["B", "C", "D"],
           games: [
-            { name: "Gioco 1", numberMatches: 2, winners: [] },
-            { name: "Gioco 2", numberMatches: 1, winners: [] },
-            { name: "Gioco 3", numberMatches: 3, winners: [] },
-            { name: "Gioco 4", numberMatches: 6, winners: [] },
+            { name: "Gioco 1", numberMatches: 2, winners: [], img: "" },
+            { name: "Gioco 2", numberMatches: 1, winners: [], img: "" },
+            { name: "Gioco 3", numberMatches: 3, winners: [], img: "" },
+            { name: "Gioco 4", numberMatches: 6, winners: [], img: "" },
           ],
         },
       ],
@@ -242,15 +258,25 @@ export default {
     addTournament() {
       let gameToAdd = this.formGames.split(",");
       let gamesArr = [];
+      let playersToAdd = this.formPlayers.split(",");
+      let playersArr = [];
 
       for (let i = 0; i < gameToAdd.length; i++) {
-        gamesArr.push({ name: gameToAdd[i], numberMatches: 0, winners: [] });
+        gamesArr.push({
+          name: gameToAdd[i],
+          numberMatches: 0,
+          winners: [],
+          img: "",
+        });
+      }
+      for (let i = 0; i < playersToAdd.length; i++) {
+        playersArr.push(playersToAdd[i]);
       }
 
       this.tournaments.push({
         id: this.tournaments.length + 1,
         name: this.formName,
-        players: this.formPlayers,
+        players: playersArr,
         games: gamesArr,
       });
 
