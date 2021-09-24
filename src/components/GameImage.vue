@@ -14,8 +14,13 @@
     >
       {{ name }}
     </p>
-    <img v-if="this.image" :src="this.image" :alt="name" />
-    <img v-else src="@/assets/notFoundimg.jpeg" alt="BGG is funny" />
+    <img v-if="this.image" :src="this.image" :alt="name" :title="name" />
+    <img
+      v-else
+      src="@/assets/notFoundimg.jpeg"
+      alt="BGG is funny"
+      title="BGG is funny"
+    />
   </div>
 </template>
 
@@ -23,7 +28,7 @@
 import * as Geekdo from "geekdo-sdk";
 
 export default {
-  props: ["name", "img"],
+  props: ["name"],
   data() {
     return {
       image: null,
@@ -31,19 +36,19 @@ export default {
   },
   methods: {
     async getGame() {
-      let x = await Geekdo.search({
-        query: this.name,
-        type: "boardgame",
-        exact: 5,
-      }).toPromise();
-      let y = x[0].id;
-      let z = `https://www.boardgamegeek.com/xmlapi2/thing?id=${y}`;
-      console.log(z);
-      let w = await Geekdo.thing({ id: y }).toPromise();
-      console.log(w);
-      this.image = w.thumbnail;
-      console.log(w.thumbnail);
-      console.log(this.image);
+      try {
+        let geekobject = await Geekdo.search({
+          query: this.name,
+          type: "boardgame",
+          exact: 5,
+        }).toPromise();
+        let idGame = geekobject[0].id;
+        let imageGame = await Geekdo.thing({ id: idGame }).toPromise();
+        this.image = imageGame.thumbnail;
+      } catch (err) {
+        this.image = "/img/notFoundimg.77ff2841.jpeg";
+        console.log(err);
+      }
     },
   },
   mounted() {

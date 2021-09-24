@@ -6,17 +6,38 @@
       </h1>
 
       <div class="flex flex-row items-center mb-4">
-        <h3 class="font-light italic mr-5 ml-8">with</h3>
+        <h3 class="font-light italic mr-5 ml-5">with</h3>
         <div v-for="(player, index) in tournament.players" :key="index">
-          <p class="pl-2 font-bold capitalize text-2xl">{{ player }}</p>
+          <p class="pl-2 font-bold capitalize text-2xl">
+            {{ player }}
+            <span v-if="!(index == tournament.players.length - 1)">,</span>
+          </p>
         </div>
       </div>
     </div>
     <div v-else>
-      <div class="flex flex-row items-center text-center justify-center">
-        <div v-for="winnerPerson in winner" :key="winnerPerson">
-          <h1 class="uppercase text-4xl font-extrabold w-1/5 ml-8">
+      <div
+        class="
+          flex flex-row
+          items-center
+          text-center
+          justify-center
+          text-yellow-400
+          border-double border-4 border-yellow-400
+        "
+      >
+        <div
+          v-for="(winnerPerson, index) in winner"
+          :key="index"
+          class="flex flex-row align-middle"
+        >
+          <h1 class="uppercase text-4xl font-extrabold w-auto ml-2">
             {{ winnerPerson }}
+            <span
+              v-if="!(index == winner.length - 1)"
+              class="text-4xl ml-2 mr-2"
+              >-</span
+            >
           </h1>
         </div>
       </div>
@@ -34,9 +55,9 @@
     <div v-for="(game, index) in tournament.games" :key="index" class="mt-2">
       <div class="border-2 border-green-500 flex items-center mb-6">
         <div class="flex flex-col">
-          <gameImage :name="game.name" :img="game.img" />
+          <gameImage :name="game.name" />
         </div>
-        <div class="border-2 border-black mr-4 mt-2 mb-2">
+        <div class="border-2 border-black mr-4 mt-2 mb-2 p-2">
           <div class="capitalize">Matches played:</div>
           <div class="border-1 border-gray-500 bg-gray-200 text-center">
             {{ game.numberMatches }}
@@ -50,6 +71,7 @@
             mr-4
             mt-2
             mb-2
+            p-2
           "
         >
           <p class="capitalize mr-2">Winner of the match:</p>
@@ -77,10 +99,11 @@
                 w-6
                 h-6
                 m-2
+                p-2
                 rounded-full
               "
             >
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+              <svg class="w-6 h-6 fill-current" viewBox="0 0 20 20">
                 <path
                   d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
                   clip-rule="evenodd"
@@ -90,7 +113,7 @@
             </button>
           </div>
         </div>
-        <div class="flex flex-col border-2 border-black">
+        <div class="flex flex-col border-2 border-black mr-4 p-2">
           <p class="text-center">
             Winners of {{ game.name }}:
             <input type="checkbox" id="checkbox" v-model="checked[index]" />
@@ -123,9 +146,13 @@
           bg-gray-500
           text-white
           hover:bg-gray-200 hover:text-black
+          shadow-lg
           mt-6
           ml-2
           mr-2
+          mb-2
+          p-2
+          rounded-l-lg
           cursor-pointer
         "
       >
@@ -136,11 +163,15 @@
         class="
           border-2 border-green-500
           bg-green-500
-          text-black
+          text-white
           hover:bg-green-200 hover:text-black
+          shadow-lg
           mt-6
           ml-2
           mr-2
+          mb-2
+          p-2
+          rounded-r-lg
           cursor-pointer
         "
       >
