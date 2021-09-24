@@ -79,6 +79,7 @@
       "
       @click="openModal"
     >
+      <!--TODO: add to firebase -->
       <span>+</span>
     </div>
 
@@ -189,6 +190,7 @@
       v-show="!selection"
       @toggleSelection="selected"
       :tournament="tournamentSelected"
+      @ending="isEnding"
     />
   </div>
 </template>
@@ -213,39 +215,13 @@ export default {
       tournaments: [
         {
           id: 1,
+          isEnded: false,
           name: "Test 1",
           players: ["A", "B", "C", "D"],
           games: [
-            { name: "Gioco 1", numberMatches: 2, winners: [], img: "" },
-            { name: "Gioco 2", numberMatches: 1, winners: [], img: "" },
-            { name: "Gioco 3", numberMatches: 3, winners: [], img: "" },
-          ],
-        },
-        {
-          id: 2,
-          name: "Test 2",
-          players: ["A", "B", "C"],
-          games: [
-            { name: "Gioco 1", numberMatches: 2, winners: [], img: "" },
-            { name: "Gioco 2", numberMatches: 1, winners: [], img: "" },
-            { name: "Gioco 3", numberMatches: 10, winners: [], img: "" },
-          ],
-        },
-        {
-          id: 3,
-          name: "Test 3",
-          players: ["A", "B", "D"],
-          games: [{ name: "Gioco 1", numberMatches: 0, winners: [], img: "" }],
-        },
-        {
-          id: 4,
-          name: "Test 4",
-          players: ["B", "C", "D"],
-          games: [
-            { name: "Gioco 1", numberMatches: 2, winners: [], img: "" },
-            { name: "Gioco 2", numberMatches: 1, winners: [], img: "" },
-            { name: "Gioco 3", numberMatches: 3, winners: [], img: "" },
-            { name: "Gioco 4", numberMatches: 6, winners: [], img: "" },
+            { name: "Scythe", numberMatches: 0, winners: [] },
+            { name: "Anachrony", numberMatches: 0, winners: [] },
+            { name: "Gioco 3", numberMatches: 0, winners: [] },
           ],
         },
       ],
@@ -266,7 +242,6 @@ export default {
           name: gameToAdd[i],
           numberMatches: 0,
           winners: [],
-          img: "",
         });
       }
       for (let i = 0; i < playersToAdd.length; i++) {
@@ -275,6 +250,7 @@ export default {
 
       this.tournaments.push({
         id: this.tournaments.length + 1,
+        isEnded: false,
         name: this.formName,
         players: playersArr,
         games: gamesArr,
@@ -301,6 +277,10 @@ export default {
     },
     selectedNavbar() {
       this.selection = true;
+    },
+    isEnding(x) {
+      console.log(x);
+      x.isEnded = true;
     },
   },
 };

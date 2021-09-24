@@ -45,6 +45,7 @@ export default {
         let idGame = geekobject[0].id;
         let imageGame = await Geekdo.thing({ id: idGame }).toPromise();
         this.image = imageGame.thumbnail;
+        this.img = this.image;
       } catch (err) {
         this.image = "/img/notFoundimg.77ff2841.jpeg";
         console.log(err);

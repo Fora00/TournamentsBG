@@ -138,6 +138,8 @@
         </div>
       </div>
     </div>
+
+    <!-- TODO: add to firebase-->
     <div class="flex flex-row uppercase">
       <div
         @click="goBack"
@@ -178,6 +180,8 @@
         winner?!
       </div>
     </div>
+
+    <h1>{{ tournament }} is</h1>
   </div>
 </template>
 
@@ -185,7 +189,7 @@
 import GameImage from "./GameImage.vue";
 export default {
   components: { GameImage },
-  emits: ["toggleSelection"],
+  emits: ["toggleSelection", "ending"],
   props: ["tournament"],
   data() {
     return {
@@ -227,6 +231,7 @@ export default {
 
       this.winnerArray = JSON.parse(JSON.stringify(this.winnerProxy));
       this.winner = this.find_mode(this.winnerArray);
+      this.$emit("ending", this.tournament);
     },
 
     find_mode(arr) {
@@ -268,6 +273,13 @@ export default {
     onlyUnique(value, index, self) {
       return self.indexOf(value) === index;
     },
+  },
+  mounted() {
+    console.log("isEnded=", this.tournament.isEnded);
+    console.log("tournament is", this.tournament);
+    if (this.tournament.isEnded == true) {
+      this.determineWinner(this.tournament);
+    }
   },
 };
 </script>
