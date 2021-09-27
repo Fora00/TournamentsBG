@@ -1,5 +1,5 @@
 <template>
-  <Navbar @NavbarSelection="selectedNavbar" />
+  <Navbar @NavbarSelection="selectedNavbar" @updateFirebase="updating" />
 
   <div
     v-if="selection"
@@ -43,7 +43,7 @@
 
           <div class="flex flex-row justify-around">
             <div
-              @click.stop="deleteTournament(index)"
+              @click.stop="deleteTournament(index, tournament.name)"
               class="
                 mt-5
                 bg-red-500
@@ -79,8 +79,13 @@
       "
       @click="openModal"
     >
-      <!--TODO: add to firebase -->
-      <span>+</span>
+      <svg class="w-6 h-6 fill-current" viewBox="0 0 20 20">
+        <path
+          d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+          clip-rule="evenodd"
+          fill-rule="evenodd"
+        ></path>
+      </svg>
     </div>
 
     <div
@@ -108,32 +113,34 @@
             ml-4
           "
         >
-          <span class="text-2xl m-2 uppercase">Define your tournament</span>
+          <span class="text-2xl m-2 uppercase font-bold"
+            >Define your tournament</span
+          >
 
           <form class="flex flex-col">
             <div class="m-2 flex justify-between">
-              <label class="mr-2">Name : </label>
+              <label class="mr-2 px-4">Name : </label>
               <input
                 type="text"
-                class="border overflow-ellipsis text-xs"
+                class="border overflow-ellipsis text-xs px-2"
                 placeholder="Tournament Name"
                 v-model="formName"
               />
             </div>
             <div class="m-2 flex justify-between">
-              <label class="mr-2">Players : </label>
+              <label class="mr-2 px-4">Players : </label>
               <input
                 type="text"
-                class="border overflow-ellipsis text-xs"
+                class="border overflow-ellipsis text-xs px-2"
                 placeholder="Tournament Players"
                 v-model="formPlayers"
               />
             </div>
             <div class="m-2 flex justify-between">
-              <label class="mr-2">Giochi iniziali: </label>
+              <label class="mr-2 px-4">Giochi iniziali: </label>
               <input
                 type="text"
-                class="border overflow-ellipsis text-xs"
+                class="border overflow-ellipsis text-xs px-2"
                 placeholder="Tournament Games"
                 v-model="formGames"
               />
@@ -147,8 +154,9 @@
                 text-white
                 hover:bg-gray-200 hover:text-black
                 rounded
-                mr-6
+                mr-4
                 cursor-pointer
+                rounded-l-lg
               "
             >
               <p class="uppercase m-1">Back</p>
@@ -165,6 +173,7 @@
                 rounded
                 uppercase
                 cursor-pointer
+                rounded-r-lg
               "
             >
               <span class="uppercase m-1" @click="addTournament">add</span>
@@ -191,11 +200,21 @@
       @toggleSelection="selected"
       :tournament="tournamentSelected"
       @ending="isEnding"
+      @updateFirebase="updating"
     />
   </div>
 </template>
 
 <script>
+import {
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  setDoc,
+} from "firebase/firestore";
+import { db } from "@/Firebase/firebaseInit.js";
+
 import Navbar from "@/components/Navbar.vue";
 import Tournament from "@/components/Tournament.vue";
 
@@ -212,19 +231,7 @@ export default {
 
       selection: true,
 
-      tournaments: [
-        {
-          id: 1,
-          isEnded: false,
-          name: "Test 1",
-          players: ["A", "B", "C", "D"],
-          games: [
-            { name: "Scythe", numberMatches: 0, winners: [] },
-            { name: "Anachrony", numberMatches: 0, winners: [] },
-            { name: "Gioco 3", numberMatches: 0, winners: [] },
-          ],
-        },
-      ],
+      tournaments: [],
     };
   },
   methods: {
@@ -256,12 +263,16 @@ export default {
         games: gamesArr,
       });
 
+      this.firebaseAdding(gamesArr, playersArr);
+
       this.formName = "";
       this.formPlayers = "";
       this.formGames = "";
+
       this.switchIsPlus();
     },
-    deleteTournament(id) {
+    deleteTournament(id, name) {
+      this.firebaseDeleting(name);
       this.tournaments.splice(id, 1);
     },
 
@@ -282,6 +293,59 @@ export default {
       console.log(x);
       x.isEnded = true;
     },
+
+    async firebaseAdding(gamesArr, playersArr) {
+      try {
+        const docRef = await addDoc(collection(db, "tournaments"), {
+          id: this.tournaments.length + 1,
+          isEnded: false,
+          name: this.formName,
+          players: playersArr,
+          games: gamesArr,
+        });
+        console.log("Document written with ID: ", docRef.id);
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+    },
+
+    async firebaseDeleting(name) {
+      const querySnapshot = await getDocs(collection(db, "tournaments"));
+      console.log(querySnapshot);
+      querySnapshot.forEach((doc) => {
+        console.log("it's doc", doc);
+        console.log("it's doc", doc.data().name);
+        if (doc.data().name === name) {
+          console.log(`elemento selezionato ======> ${doc.data().name}`);
+          console.log(`${doc.id} Deleted`);
+          let x = deleteDoc(doc.ref);
+          console.log(x);
+        }
+      });
+    },
+    async updating() {
+      const querySnapshot = await getDocs(collection(db, "tournaments"));
+      querySnapshot.forEach((doc) => {
+        console.log("doc", doc);
+        this.tournaments.forEach((tournament) => {
+          console.log("tournament", tournament);
+          setDoc(doc.ref, {
+            id: tournament.id,
+            isEnded: tournament.isEnded,
+            name: tournament.name,
+            games: tournament.games,
+            players: tournament.players,
+          });
+        });
+      });
+    },
+  },
+  async mounted() {
+    const querySnapshot = await getDocs(collection(db, "tournaments"));
+    querySnapshot.forEach((doc) => {
+      console.log(`${doc.id} => ${doc.data()}`);
+      this.tournaments.push(doc.data());
+    });
   },
 };
 </script>

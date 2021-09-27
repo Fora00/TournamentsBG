@@ -14,12 +14,19 @@
     >
       {{ name }}
     </p>
-    <img v-if="this.image" :src="this.image" :alt="name" :title="name" />
+    <img
+      v-if="this.image"
+      :src="this.image"
+      :alt="name"
+      :title="name"
+      class="p-1"
+    />
     <img
       v-else
       src="@/assets/notFoundimg.jpeg"
       alt="BGG is funny"
       title="BGG is funny"
+      class="p-1"
     />
   </div>
 </template>

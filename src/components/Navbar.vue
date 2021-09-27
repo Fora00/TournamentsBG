@@ -11,11 +11,12 @@
 
 <script>
 export default {
-  emits: ["NavbarSelection"],
+  emits: ["NavbarSelection", "updateFirebase"],
 
   methods: {
     goBack() {
       this.$emit("NavbarSelection");
+      this.$emit("updateFirebase");
     },
   },
 };

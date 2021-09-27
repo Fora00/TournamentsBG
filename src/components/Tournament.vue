@@ -18,12 +18,15 @@
     <div v-else>
       <div
         class="
+          w-auto
+          h-auto
           flex flex-row
           items-center
           text-center
           justify-center
           text-yellow-400
           border-double border-4 border-yellow-400
+          rounded-full
         "
       >
         <div
@@ -52,95 +55,100 @@
         games
       </h2>
     </div>
+
     <div v-for="(game, index) in tournament.games" :key="index" class="mt-2">
-      <div class="border-2 border-green-500 flex items-center mb-6">
+      <div class="border-2 border-green-500 flex mb-6 items-stretch">
         <div class="flex flex-col">
           <gameImage :name="game.name" />
         </div>
         <div class="border-2 border-black mr-4 mt-2 mb-2 p-2">
-          <div class="capitalize">Matches played:</div>
-          <div class="border-1 border-gray-500 bg-gray-200 text-center">
-            {{ game.numberMatches }}
+          <div class="capitalize text-center">
+            Matches played:
+            <span>
+              {{ game.numberMatches }}
+            </span>
           </div>
-        </div>
-        <div
-          class="
-            border-2 border-black
-            flex flex-row
-            items-center
-            mr-4
-            mt-2
-            mb-2
-            p-2
-          "
-        >
-          <p class="capitalize mr-2">Winner of the match:</p>
-          <div class="flex flex-wrap align-middle">
-            <select
-              v-model="winnersInput[index]"
-              class="border-2 w-auto text-black mr-3 py-1 px-3"
-            >
-              <option value="" disabled>--select one--</option>
-              <option v-for="option in myOptions" :value="option" :key="option">
-                {{ option }}
-              </option>
-            </select>
-            <button
-              @click="addGame(game, index)"
-              :class="
-                winnersInput[index]
-                  ? ' cursor-pointer text-white bg-green-500 focus:shadow-outline hover:bg-green-200 hover:text-black '
-                  : 'border border-green-300 text-gray-500 pointer-events-none'
-              "
-              class="
-                inline-flex
-                items-center
-                justify-center
-                w-6
-                h-6
-                m-2
-                p-2
-                rounded-full
-              "
-            >
-              <svg class="w-6 h-6 fill-current" viewBox="0 0 20 20">
-                <path
-                  d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-                  clip-rule="evenodd"
-                  fill-rule="evenodd"
-                ></path>
-              </svg>
-            </button>
+          <div
+            class="
+              border-2 border-black
+              flex flex-row
+              items-center
+              mr-4
+              mt-2
+              mb-2
+              p-2
+            "
+          >
+            <p class="capitalize mr-2">Winner of the match:</p>
+            <div class="flex flex-wrap align-middle">
+              <select
+                v-model="winnersInput[index]"
+                class="border-2 w-auto text-black mr-3 py-1 px-3"
+              >
+                <option value="" disabled>--select one--</option>
+                <option
+                  v-for="option in myOptions"
+                  :value="option"
+                  :key="option"
+                >
+                  {{ option }}
+                </option>
+              </select>
+              <button
+                @click="addGame(game, index)"
+                :class="
+                  winnersInput[index]
+                    ? ' cursor-pointer text-white bg-green-500 focus:shadow-outline hover:bg-green-200 hover:text-black '
+                    : 'border border-green-300 text-gray-500 pointer-events-none'
+                "
+                class="
+                  inline-flex
+                  items-center
+                  justify-center
+                  w-6
+                  h-6
+                  m-2
+                  p-2
+                  rounded-full
+                "
+              >
+                <svg class="w-6 h-6 fill-current" viewBox="0 0 20 20">
+                  <path
+                    d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                    clip-rule="evenodd"
+                    fill-rule="evenodd"
+                  ></path>
+                </svg>
+              </button>
+            </div>
           </div>
-        </div>
-        <div class="flex flex-col border-2 border-black mr-4 p-2">
-          <p class="text-center">
-            Winners of {{ game.name }}:
-            <input type="checkbox" id="checkbox" v-model="checked[index]" />
-          </p>
+          <div class="flex flex-col border-2 border-black mr-4 p-2">
+            <p class="text-center">
+              Winners of {{ game.name }}:
+              <input type="checkbox" id="checkbox" v-model="checked[index]" />
+            </p>
 
-          <div v-show="checked[index]" class="flex flex-wrap justify-center">
-            <div
-              v-for="(winner, index) in game.winners"
-              :key="index"
-              class="
-                w-3/6
-                text-center
-                truncate
-                overflow-ellipsis
-                border border-white
-                bg-gray-200
-              "
-            >
-              {{ winner }}
+            <div v-show="checked[index]" class="flex flex-wrap justify-center">
+              <div
+                v-for="(winner, index) in game.winners"
+                :key="index"
+                class="
+                  w-3/6
+                  text-center
+                  truncate
+                  overflow-ellipsis
+                  border border-white
+                  bg-gray-200
+                "
+              >
+                {{ winner }}
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- TODO: add to firebase-->
-    <div class="flex flex-row uppercase">
+    <div class="flex flex-row uppercase bottom-0 fixed">
       <div
         @click="goBack"
         class="
@@ -162,11 +170,13 @@
       </div>
       <div
         @click="determineWinner(tournament)"
+        :class="
+          !checkWinner
+            ? 'bg-white text-black border-2  pointer-events-none'
+            : 'bg-green-500 text-white hover:bg-green-200 hover:text-black'
+        "
         class="
           border-2 border-green-500
-          bg-green-500
-          text-white
-          hover:bg-green-200 hover:text-black
           shadow-lg
           mt-6
           ml-2
@@ -180,8 +190,6 @@
         winner?!
       </div>
     </div>
-
-    <h1>{{ tournament }} is</h1>
   </div>
 </template>
 
@@ -189,10 +197,11 @@
 import GameImage from "./GameImage.vue";
 export default {
   components: { GameImage },
-  emits: ["toggleSelection", "ending"],
+  emits: ["toggleSelection", "ending", "updateFirebase"],
   props: ["tournament"],
   data() {
     return {
+      checkWinner: false,
       winnersInput: [],
       winnerProxy: [],
       winnerArray: [],
@@ -204,6 +213,7 @@ export default {
   },
   methods: {
     addGame(game, index) {
+      this.checkWinner = true;
       game.numberMatches = game.numberMatches + 1;
       game.winners.push(this.winnersInput[index]);
 
@@ -212,6 +222,7 @@ export default {
 
     goBack() {
       this.$emit("toggleSelection");
+      this.$emit("updateFirebase");
     },
 
     determineWinner(tournament) {
