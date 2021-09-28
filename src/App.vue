@@ -1,4 +1,5 @@
 <template>
+  <!-- TODO: responsivness ? -->
   <Navbar @NavbarSelection="selectedNavbar" @updateFirebase="updating" />
 
   <div
@@ -13,16 +14,50 @@
             w-auto
             shadow-md
             bg-green-500
-            text-white
+            text-gray-800
+            dark:text-white
             p-10
             text-center
             rounded
             m-5
             cursor-pointer
             hover:bg-green-200 hover:text-black
+            dark:hover:bg-gray-400
             flex flex-col flex-wrap
           "
         >
+          <div class="flex flex-row">
+            <div
+              @click.stop="deleteTournament(index, tournament.name)"
+              class="
+                -ml-14
+                -mt-14
+                bg-red-500
+                hover:bg-red-200
+                h-8
+                w-8
+                flex
+                items-center
+                justify-center
+                rounded-full
+              "
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
+            </div>
+          </div>
           <div>
             Torneo {{ index + 1 }}: named
             <span class="font-bold"> {{ tournament.name }}</span>
@@ -40,25 +75,6 @@
             </span>
             games
           </div>
-
-          <div class="flex flex-row justify-around">
-            <div
-              @click.stop="deleteTournament(index, tournament.name)"
-              class="
-                mt-5
-                bg-red-500
-                hover:bg-red-200
-                h-10
-                w-10
-                flex
-                items-center
-                justify-center
-                rounded-full
-              "
-            >
-              X
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -68,8 +84,11 @@
         mt-8
         h-12
         w-12
-        text-white text-center
+        text-gray-800
+        dark:text-white
+        text-center
         hover:bg-green-200 hover:text-black
+        dark:hover:bg-gray-400
         font-extrabold
         flex
         items-center
@@ -100,6 +119,10 @@
         z-50
       "
     >
+      <!-- TODO: colori bottoni -->
+      <!-- TODO: testo inglese -->
+      <!-- TODO: modal design in dark mode -->
+      <!-- TODO: back + add come icone-->
       <div class="relative mx-auto w-auto max-w-2xl">
         <div
           class="
@@ -111,6 +134,7 @@
             justify-center
             items-center
             ml-4
+            dark:text-gray-600 dark:bg-green-200
           "
         >
           <span class="text-2xl m-2 uppercase font-bold"
@@ -137,7 +161,7 @@
               />
             </div>
             <div class="m-2 flex justify-between">
-              <label class="mr-2 px-4">Giochi iniziali: </label>
+              <label class="mr-2 px-4">Games: </label>
               <input
                 type="text"
                 class="border overflow-ellipsis text-xs px-2"
@@ -150,8 +174,9 @@
             <button
               @click="switchIsPlus"
               class="
-                bg-gray-500
-                text-white
+                bg-gray-400
+                text-gray-800
+                dark:text-white
                 hover:bg-gray-200 hover:text-black
                 rounded
                 mr-4
@@ -165,11 +190,12 @@
             <button
               :class="
                 formName && formPlayers && formGames
-                  ? 'bg-green-500 text-white'
+                  ? 'bg-green-500 text-gray-800 dark:text-white'
                   : 'border border-green-500 text-black pointer-events-none'
               "
               class="
                 hover:bg-green-200 hover:text-black
+                dark:hover:bg-green-700
                 rounded
                 uppercase
                 cursor-pointer
@@ -290,7 +316,6 @@ export default {
       this.selection = true;
     },
     isEnding(x) {
-      console.log(x);
       x.isEnded = true;
     },
 
@@ -311,13 +336,8 @@ export default {
 
     async firebaseDeleting(name) {
       const querySnapshot = await getDocs(collection(db, "tournaments"));
-      console.log(querySnapshot);
       querySnapshot.forEach((doc) => {
-        console.log("it's doc", doc);
-        console.log("it's doc", doc.data().name);
         if (doc.data().name === name) {
-          console.log(`elemento selezionato ======> ${doc.data().name}`);
-          console.log(`${doc.id} Deleted`);
           let x = deleteDoc(doc.ref);
           console.log(x);
         }
@@ -325,17 +345,20 @@ export default {
     },
     async updating() {
       const querySnapshot = await getDocs(collection(db, "tournaments"));
+
       querySnapshot.forEach((doc) => {
-        console.log("doc", doc);
         this.tournaments.forEach((tournament) => {
-          console.log("tournament", tournament);
-          setDoc(doc.ref, {
-            id: tournament.id,
-            isEnded: tournament.isEnded,
-            name: tournament.name,
-            games: tournament.games,
-            players: tournament.players,
-          });
+          if (doc.data().name == tournament.name) {
+            setDoc(doc.ref, {
+              id: tournament.id,
+              isEnded: tournament.isEnded,
+              name: tournament.name,
+              games: tournament.games,
+              players: tournament.players,
+            });
+          } else {
+            console.log("?");
+          }
         });
       });
     },
@@ -343,11 +366,8 @@ export default {
   async mounted() {
     const querySnapshot = await getDocs(collection(db, "tournaments"));
     querySnapshot.forEach((doc) => {
-      console.log(`${doc.id} => ${doc.data()}`);
       this.tournaments.push(doc.data());
     });
   },
 };
 </script>
-
-<style></style>

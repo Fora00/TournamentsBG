@@ -1,4 +1,6 @@
 <template>
+  <!-- TODO: bordi neri in dark mode ?  -->
+  <!-- TODO: box più tondi  -->
   <div class="flex flex-col items-center mt-4">
     <div v-if="!winner">
       <h1 class="uppercase items-center text-3xl font-extrabold">
@@ -22,27 +24,52 @@
           h-auto
           flex flex-row
           items-center
-          text-center
-          justify-center
+          justify-between
           text-yellow-400
           border-double border-4 border-yellow-400
           rounded-full
         "
       >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6 ml-2 mr-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z"
+          />
+        </svg>
         <div
           v-for="(winnerPerson, index) in winner"
           :key="index"
           class="flex flex-row align-middle"
         >
-          <h1 class="uppercase text-4xl font-extrabold w-auto ml-2">
+          <h1 class="uppercase text-4xl font-extrabold w-auto">
             {{ winnerPerson }}
-            <span
-              v-if="!(index == winner.length - 1)"
-              class="text-4xl ml-2 mr-2"
+            <span v-if="!(index == winner.length - 1)" class="mr-2 ml-1"
               >-</span
             >
           </h1>
         </div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6 mr-2 ml-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z"
+          />
+        </svg>
       </div>
       <h2 class="italic mt-2 ml-8">
         <span v-if="winner.length > 1">are the Winners of</span>
@@ -57,12 +84,21 @@
     </div>
 
     <div v-for="(game, index) in tournament.games" :key="index" class="mt-2">
-      <div class="border-2 border-green-500 flex mb-6 items-stretch">
+      <div
+        class="
+          border-2 border-green-500
+          rounded-r-lg
+          flex
+          mb-6
+          items-stretch
+          p-2
+        "
+      >
         <div class="flex flex-col">
           <gameImage :name="game.name" />
         </div>
-        <div class="border-2 border-black mr-4 mt-2 mb-2 p-2">
-          <div class="capitalize text-center">
+        <div class="border-2 border-black dark:border-white mr-4 mt-2 mb-2 p-2">
+          <div class="capitalize text-center dark:bg-green-800">
             Matches played:
             <span>
               {{ game.numberMatches }}
@@ -71,15 +107,18 @@
           <div
             class="
               border-2 border-black
+              dark:border-white
               flex flex-row
               items-center
               mr-4
               mt-2
               mb-2
-              p-2
+              p-1
             "
           >
-            <p class="capitalize mr-2">Winner of the match:</p>
+            <p class="capitalize mr-2 dark:bg-green-800">
+              Winner of the match:
+            </p>
             <div class="flex flex-wrap align-middle">
               <select
                 v-model="winnersInput[index]"
@@ -98,8 +137,8 @@
                 @click="addGame(game, index)"
                 :class="
                   winnersInput[index]
-                    ? ' cursor-pointer text-white bg-green-500 focus:shadow-outline hover:bg-green-200 hover:text-black '
-                    : 'border border-green-300 text-gray-500 pointer-events-none'
+                    ? ' cursor-pointer text-gray-800 bg-green-500 focus:shadow-outline hover:bg-green-200 hover:text-black '
+                    : 'border border-green-300 text-gray-500 dark:bg-white pointer-events-none'
                 "
                 class="
                   inline-flex
@@ -108,27 +147,45 @@
                   w-6
                   h-6
                   m-2
-                  p-2
+                  p-1
                   rounded-full
                 "
               >
-                <svg class="w-6 h-6 fill-current" viewBox="0 0 20 20">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
                   <path
-                    d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-                    clip-rule="evenodd"
-                    fill-rule="evenodd"
-                  ></path>
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 4v16m8-8H4"
+                  />
                 </svg>
               </button>
             </div>
           </div>
-          <div class="flex flex-col border-2 border-black mr-4 p-2">
-            <p class="text-center">
+          <div
+            class="
+              flex flex-col
+              border-2 border-black
+              dark:border-white
+              mr-4
+              p-2
+            "
+          >
+            <p class="text-center dark:bg-green-800">
               Winners of {{ game.name }}:
               <input type="checkbox" id="checkbox" v-model="checked[index]" />
             </p>
 
-            <div v-show="checked[index]" class="flex flex-wrap justify-center">
+            <div
+              v-show="checked[index]"
+              class="flex flex-wrap justify-center dark:bg-green-800"
+            >
               <div
                 v-for="(winner, index) in game.winners"
                 :key="index"
@@ -139,6 +196,7 @@
                   overflow-ellipsis
                   border border-white
                   bg-gray-200
+                  dark:bg-green-600 dark:text-gray-200
                 "
               >
                 {{ winner }}
@@ -154,7 +212,7 @@
         class="
           border-2 border-gray-500
           bg-gray-500
-          text-white
+          text-gray-800
           hover:bg-gray-200 hover:text-black
           shadow-lg
           mt-6
@@ -173,7 +231,7 @@
         :class="
           !checkWinner
             ? 'bg-white text-black border-2  pointer-events-none'
-            : 'bg-green-500 text-white hover:bg-green-200 hover:text-black'
+            : 'bg-green-500 text-gray-800 hover:bg-green-200 hover:text-black'
         "
         class="
           border-2 border-green-500

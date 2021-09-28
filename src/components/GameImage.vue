@@ -1,15 +1,18 @@
 <template>
-  <div class="border-2 border-black flex flex-col m-2">
+  <div class="border-2 border-black dark:border-white flex flex-col m-2">
     <p
       class="
         uppercase
         border-2 border-black
+        dark:border-white
         flex-1
         ml-2
         mt-2
         mb-2
         mr-4
         text-center
+        dark:bg-green-800
+        p-1
       "
     >
       {{ name }}
