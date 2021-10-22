@@ -12,6 +12,8 @@ Bg-tournament is born as an expandable project to manages your Boardgame night w
 
 ## Project setup
 
+you will need to have access to the standard firebase credential and run the following command
+
 ```
 npm install
 cd src
