@@ -119,10 +119,6 @@
         z-50
       "
     >
-      <!-- TODO: colori bottoni -->
-      <!-- TODO: testo inglese -->
-      <!-- TODO: modal design in dark mode -->
-      <!-- TODO: back + add come icone-->
       <div class="relative mx-auto w-auto max-w-2xl">
         <div
           class="
