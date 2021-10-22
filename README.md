@@ -9,5 +9,7 @@ rework with Vuex, better the styling, deploying
 ## Project setup
 ```
 npm install
+cd src 
+npm run serve
 ```
 
