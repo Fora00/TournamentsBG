@@ -4,7 +4,7 @@ Bg-tournament is born as an expandable project to manages your Boardgame night w
 
 ## things to do 
 
-rework with Vuex, better the styling, deploying
+rework with Vuex, better the styling, refactoring, deploying
 
 ## Project setup
 ```
